@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SE Pathway - Feeder and Consumer Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#1A9988; --orange:#EB5600; --navy:#1C3678; --steel:#6AA4C8;
+    --purple:#5C3A8C; --dgrey:#595959; --pgrey:#E9EDEE; --ink:#1A1A1A;
+    --paper:#FBFCFC; --line:#D5DBDC; --mint:#A2FFE8;
+    --sans:'Open Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--sans); color:var(--ink); background:#EFF3F3;
+    font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1280px; margin:0 auto; padding:26px 22px 60px;}
+
+  /* ---------- Masthead ---------- */
+  .mast{background:#fff; border:1px solid var(--line); border-top:5px solid var(--teal); padding:22px 26px 20px; margin-bottom:20px;}
+  .mast .eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--dgrey); font-weight:700;}
+  .mast h1{font-size:25px; font-weight:700; margin:8px 0 4px; line-height:1.2;}
+  .mast .sub{font-size:14px; color:#333; margin:0 0 12px; max-width:78ch;}
+  .bars{display:flex; gap:6px; margin:2px 0 12px;}
+  .bars span{height:6px; display:block;}
+  .bars .b1{width:52px; background:var(--teal);}
+  .bars .b2{width:26px; background:var(--orange);}
+  .metaline{display:flex; flex-wrap:wrap; gap:8px 20px; font-size:11.5px; color:var(--dgrey); border-top:1px solid var(--pgrey); padding-top:10px;}
+  .metaline b{color:var(--ink); font-weight:600;}
+
+  /* ---------- Section headers ---------- */
+  .sec{background:#fff; border:1px solid var(--line); margin-bottom:20px;}
+  .sec-h{display:flex; align-items:baseline; gap:12px; padding:14px 20px 12px; border-bottom:1px solid var(--pgrey);}
+  .sec-h .n{font-size:12px; font-weight:700; color:#fff; background:var(--navy); border-radius:3px; padding:2px 8px; letter-spacing:.04em;}
+  .sec-h h2{font-size:17px; font-weight:700; margin:0;}
+  .sec-h p{font-size:12px; color:var(--dgrey); margin:0 0 0 auto; max-width:52ch; text-align:right;}
+  .sec-body{padding:18px 20px 22px;}
+
+  /* ---------- Legend ---------- */
+  .legend{display:flex; flex-wrap:wrap; gap:10px 26px; align-items:flex-start;}
+  .lg-group{display:flex; flex-direction:column; gap:7px;}
+  .lg-title{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--dgrey); font-weight:700;}
+  .lg-row{display:flex; align-items:center; gap:8px; font-size:12px;}
+  .swatch{width:26px; height:14px; border-radius:2px; border:1px solid rgba(0,0,0,.12); flex:none;}
+  .swatch.strip{width:6px; height:16px; border-radius:1px;}
+  .lg-line{width:34px; height:0; border-top:2.5px solid var(--dgrey); position:relative; flex:none;}
+  .lg-line.up{border-color:var(--teal);}
+  .lg-line.down{border-color:var(--orange);}
+  .lg-line.dash{border-top-style:dashed;}
+  .tagmini{font-size:10.5px; font-weight:700; padding:1px 6px; border-radius:3px; letter-spacing:.03em;}
+
+  /* ---------- Spine ---------- */
+  .spine-tools{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px;}
+  .hint{font-size:12px; color:var(--dgrey);}
+  .btn{font-family:var(--sans); font-size:12px; font-weight:600; border:1px solid var(--line); background:#fff; color:var(--ink); padding:6px 12px; border-radius:4px; cursor:pointer;}
+  .btn:hover{border-color:var(--teal); color:var(--teal);}
+  .sel-note{font-size:12px; font-weight:600; color:var(--navy);}
+
+  .spine-scroll{overflow-x:auto; padding-bottom:6px;}
+  .spine{position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:26px; min-width:960px;}
+  #linkLayer{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:5; overflow:visible;}
+  .col{position:relative; z-index:1;}
+  .col-h{text-align:center; margin-bottom:12px;}
+  .col-h .lvl{font-size:11px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--dgrey);}
+  .col-h .yr{font-size:14px; font-weight:700; color:var(--ink); display:block; margin-top:2px;}
+  .col-h .cr{font-size:11px; color:var(--dgrey);}
+  .col.cu .col-h .yr{color:var(--orange);}
+  .subhead{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:#9098a0; font-weight:700; margin:10px 2px 6px;}
+
+  .chip{position:relative; background:#fff; border:1px solid var(--line); border-left-width:5px; border-radius:5px; padding:8px 10px 9px; margin-bottom:9px; cursor:pointer; transition:box-shadow .12s, transform .12s, opacity .12s;}
+  .chip:hover{box-shadow:0 2px 10px rgba(0,0,0,.10); transform:translateY(-1px);}
+  .chip .ct{font-size:12.5px; font-weight:700; line-height:1.25;}
+  .chip .cmeta{font-size:10.5px; color:var(--dgrey); margin-top:3px; display:flex; flex-wrap:wrap; gap:3px 8px; align-items:center;}
+  .chip .cr-badge{font-weight:700; color:var(--ink);}
+  .chip .brg{font-size:9.5px; font-weight:700; color:#fff; background:var(--purple); border-radius:3px; padding:1px 5px; letter-spacing:.03em;}
+  .chip .code{font-size:10px; font-weight:700; color:var(--orange); letter-spacing:.02em;}
+
+  .chip.t-cmn{border-left-color:var(--teal);}
+  .chip.t-csc{border-left-color:var(--steel);}
+  .chip.t-swe{border-left-color:var(--navy);}
+  .chip.t-int{border-left-color:var(--dgrey);}
+  .chip.t-skl{border-left-color:var(--purple);}
+  .chip.t-cu{border-left-color:var(--orange); background:#FFFaf6;}
+
+  .chip.dim{opacity:.28;}
+  .chip.sel{box-shadow:0 0 0 2px var(--ink), 0 4px 16px rgba(0,0,0,.16);}
+  .chip.up{box-shadow:0 0 0 2px var(--teal);}
+  .chip.down{box-shadow:0 0 0 2px var(--orange);}
+
+  /* ---------- Detail panel ---------- */
+  .panel{border:1px solid var(--line); border-top:4px solid var(--navy); background:#fff; margin-top:16px; padding:0; display:none;}
+  .panel.open{display:block;}
+  .panel-h{padding:14px 18px 12px; border-bottom:1px solid var(--pgrey); display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap;}
+  .panel-h h3{font-size:16px; font-weight:700; margin:0;}
+  .panel-h .p-tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;}
+  .panel-grid{display:grid; grid-template-columns:1fr 1fr; gap:0;}
+  .pcell{padding:14px 18px; border-right:1px solid var(--pgrey); border-bottom:1px solid var(--pgrey);}
+  .pcell:nth-child(2n){border-right:none;}
+  .pcell h4{font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--dgrey); margin:0 0 8px; font-weight:700;}
+  .rel-item{font-size:12.5px; margin:0 0 6px; padding-left:16px; position:relative; line-height:1.4;}
+  .rel-item::before{content:""; position:absolute; left:0; top:6px; width:8px; height:8px; border-radius:2px;}
+  .rel-item.down::before{background:var(--orange);}
+  .rel-item.up::before{background:var(--teal);}
+  .rel-item .rname{font-weight:600;}
+  .rel-item .rcode{font-size:10.5px; font-weight:700; color:var(--orange);}
+  .rel-item .rnote{color:var(--dgrey);}
+  .rel-item .soft{font-size:10px; font-weight:700; color:var(--dgrey); border:1px solid var(--line); border-radius:3px; padding:0 4px; margin-left:4px;}
+  .pcell p.body{font-size:12.5px; margin:0; line-height:1.5;}
+  .pcell.covers{background:#F4FBF9;}
+  .pcell.excl{background:#FFF7F3;}
+
+  /* ---------- Detail cards (static, print) ---------- */
+  .cards{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  .card{border:1px solid var(--line); border-left-width:5px; border-radius:5px; background:#fff; padding:13px 15px 14px;}
+  .card.t-cmn{border-left-color:var(--teal);} .card.t-csc{border-left-color:var(--steel);}
+  .card.t-swe{border-left-color:var(--navy);} .card.t-int{border-left-color:var(--dgrey);}
+  .card.t-skl{border-left-color:var(--purple);}
+  .card .c-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px;}
+  .card h3{font-size:14px; font-weight:700; margin:0 0 2px; line-height:1.25;}
+  .card .c-cr{font-size:11px; font-weight:700; color:var(--ink); white-space:nowrap;}
+  .card .c-tags{display:flex; gap:5px; flex-wrap:wrap; margin:6px 0 9px;}
+  .card .c-role{font-size:12px; font-style:italic; color:var(--navy); margin:0 0 9px;}
+  .card .grp{margin-bottom:9px;}
+  .card .grp .lab{font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--dgrey); font-weight:700; margin-bottom:3px;}
+  .card .grp .val{font-size:12px; line-height:1.45;}
+  .card .feeds .val span.f{display:inline;}
+  .card .arrow{color:var(--orange); font-weight:700;}
+  .card .arrow.up{color:var(--teal);}
+  .card .softtag{font-size:9.5px; font-weight:700; color:var(--dgrey); border:1px solid var(--line); border-radius:3px; padding:0 4px;}
+  .card .cu-ref{font-weight:700; color:var(--orange);}
+  .card .covers-line{font-size:11.5px; line-height:1.45;}
+  .card .covers-line b{color:var(--teal);}
+  .card .excl-line b{color:var(--orange);}
+  .card .exit{font-size:11.5px; color:#333; border-top:1px dotted var(--line); padding-top:8px; margin-top:2px;}
+
+  .tag{font-size:10px; font-weight:700; padding:2px 7px; border-radius:3px; letter-spacing:.02em; white-space:nowrap;}
+  .tag.type{color:#fff;}
+  .tag.tt-cmn{background:var(--teal);} .tag.tt-csc{background:var(--steel);}
+  .tag.tt-swe{background:var(--navy);} .tag.tt-int{background:var(--dgrey);}
+  .tag.tt-skl{background:var(--purple);}
+  .tag.cr{background:var(--pgrey); color:var(--ink);}
+  .tag.brg{background:var(--purple); color:#fff;}
+
+  .yr-band{font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--dgrey); margin:6px 0 12px; padding-bottom:6px; border-bottom:2px solid var(--pgrey);}
+  .yr-band:not(:first-child){margin-top:26px;}
+
+  /* ---------- Coventry reverse table ---------- */
+  table.cu{width:100%; border-collapse:collapse; font-size:12px;}
+  table.cu th{background:var(--navy); color:#fff; font-size:11px; text-align:left; padding:8px 10px; font-weight:700; letter-spacing:.02em;}
+  table.cu td{border-bottom:1px solid var(--pgrey); padding:8px 10px; vertical-align:top;}
+  table.cu tr:nth-child(even) td{background:#FAFBFB;}
+  table.cu .code{font-weight:700; color:var(--orange); white-space:nowrap; font-size:11.5px;}
+  table.cu .cu-title{font-weight:600;}
+  table.cu .sem{font-size:11px; color:var(--dgrey); white-space:nowrap;}
+  table.cu .cr{font-weight:700; white-space:nowrap;}
+  table.cu .feeders{font-size:11.5px; line-height:1.5;}
+  table.cu .feeders .fd{white-space:nowrap;}
+  table.cu .feeders .soft{color:var(--dgrey);}
+  table.cu .none{color:var(--dgrey); font-style:italic;}
+  .lvl-row td{background:var(--pgrey)!important; font-weight:700; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); padding:5px 10px;}
+
+  .foot{font-size:11px; color:var(--dgrey); margin-top:22px; border-top:1px solid var(--line); padding-top:12px; line-height:1.5;}
+
+  @media (max-width:920px){
+    .spine{min-width:900px;}
+    .panel-grid{grid-template-columns:1fr;}
+    .pcell{border-right:none;}
+    .cards{grid-template-columns:1fr;}
+    .sec-h p{display:none;}
+  }
+  @media print{
+    body{background:#fff; font-size:11px;}
+    .wrap{max-width:none; padding:0;}
+    .spine-tools,.panel,#linkLayer{display:none!important;}
+    .sec,.mast{border-color:#bbb; break-inside:avoid;}
+    .chip{cursor:default;}
+    .cards{grid-template-columns:1fr 1fr;}
+    .card,.chip{break-inside:avoid;}
+  }
+  .chip .ncode{font-size:9.5px; font-weight:700; color:#8a9096; letter-spacing:.02em;}
+  .card .ncode{font-size:10px; font-weight:700; color:#8a9096; letter-spacing:.02em; margin-bottom:2px;}
+  .cap-note{font-size:11.5px; color:var(--dgrey); margin:12px 2px 0; line-height:1.5; border-top:1px dotted var(--line); padding-top:10px;}
+  .cap-note b{color:var(--ink);}
+  .vchip{font-size:10.5px;font-weight:700;color:#fff;background:var(--orange);border-radius:3px;padding:2px 8px;letter-spacing:.03em;}
+</style>
+<body>
+<style>
+  .chip .trk{font-size:9px;font-weight:700;color:#fff;border-radius:3px;padding:1px 5px;letter-spacing:.04em;}
+  .trk.eh{background:#A4303F;} .trk.ne{background:#2D6A8E;} .trk.sh{background:#8a9096;}
+  table.cu .trkcell{font-weight:700;font-size:11px;white-space:nowrap;}
+  table.cu .trkcell .eh{color:#A4303F;} table.cu .trkcell .ne{color:#2D6A8E;} table.cu .trkcell .sh{color:#6b7178;}
+  .p-tags .trk{font-size:10px;}
+</style>
+<div class="wrap">
+
+  <!-- MASTHEAD -->
+  <div class="mast">
+    <div class="eyebrow">NIBM School of Computing and Engineering &nbsp;&middot;&nbsp; Curriculum Restructuring 2026/2027 &nbsp;&middot;&nbsp; <span class="vchip">v8.1</span></div>
+    <h1>Feeder and Consumer Map - Applied Cybersecurity (Network Engineering and Cybersecurity)</h1>
+    <div class="bars"><span class="b1"></span><span class="b2"></span></div>
+    <p class="sub">Vertical mapping of the SLQF Level 3 (Diploma) and Level 4 (HND) stages onto the validated Coventry University FHEQ Levels 5 and 6. Year 3 (Level 5) is shared in full; Year 4 (Level 6) branches into the Ethical Hacking and Network Engineering tracks. Every module is placed by what prepares it and what it prepares.</p>
+    <div class="metaline">
+      <span><b>Award:</b> BSc (Hons) Applied Cybersecurity (Ethical Hacking and Network Engineering tracks)</span>
+      <span><b>HND exit:</b> Higher National Diploma in Network Engineering and Cybersecurity</span>
+      <span><b>Validation partner:</b> Coventry University</span>
+      <span><b>Architecture:</b> v8.1 (module records v1.0)</span>
+      <span><b>Credit basis:</b> SLQF - 1 credit = 50 notional hours (Industrial Training = 100)</span>
+      <span><b>Diploma exit:</b> 41 credits / 13 modules &nbsp;&middot;&nbsp; HND exit: 43 credits / 15 modules</span>
+      <span><b>Status:</b> Governance submission</span>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="sec">
+    <div class="sec-h"><span class="n">Key</span><h2>How to read this map</h2>
+      <p>Module type is shown by the left border colour. Relationship direction and strength are shown by line colour and style.</p>
+    </div>
+    <div class="sec-body">
+      <div class="legend">
+        <div class="lg-group">
+          <span class="lg-title">Module type</span>
+          <div class="lg-row"><span class="swatch strip" style="background:var(--teal)"></span> Common - institution-wide (Tier 1)</div>
+          <div class="lg-row"><span class="swatch strip" style="background:var(--navy)"></span> Pathway - taught</div>
+          <div class="lg-row"><span class="swatch strip" style="background:var(--dgrey)"></span> Integrative skills</div>
+          <div class="lg-row"><span class="swatch strip" style="background:var(--purple)"></span> Pathway - project / placement</div>
+          <div class="lg-row"><span class="swatch strip" style="background:var(--orange)"></span> Coventry FHEQ Level 5 / 6 destination</div>
+          <div class="lg-row" style="color:var(--dgrey);font-size:11px">NEC carries no computing-cluster (Tier 2) common modules.</div>
+        </div>
+        <div class="lg-group">
+          <span class="lg-title">Relationships (on selecting a module)</span>
+          <div class="lg-row"><span class="lg-line up"></span> Feeds this module (upstream preparation)</div>
+          <div class="lg-row"><span class="lg-line down"></span> This module feeds (downstream consumer)</div>
+          <div class="lg-row"><span class="lg-line down dash"></span> Indicative or supporting link, not a hard prerequisite</div>
+        </div>
+        <div class="lg-group">
+          <span class="lg-title">Level 6 tracks (Year 4)</span>
+          <div class="lg-row"><span class="trk eh">EH</span> Ethical Hacking track</div>
+          <div class="lg-row"><span class="trk ne">NE</span> Network Engineering track</div>
+          <div class="lg-row"><span class="trk sh">SHARED</span> Taken by both tracks</div>
+          <div class="lg-row" style="color:var(--dgrey);font-size:11px">Coventry Applied Cybersecurity modules are named, not code-numbered.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPINE -->
+  <div class="sec">
+    <div class="sec-h"><span class="n">1</span><h2>The vertical spine</h2>
+      <p>Select any module to trace its full lineage across all four levels. Feeders light up in teal, consumers in orange.</p>
+    </div>
+    <div class="sec-body">
+      <div class="spine-tools">
+        <span class="hint">Click a module to trace its feeders and consumers.</span>
+        <button class="btn" id="resetBtn">Clear selection</button>
+        <span class="sel-note" id="selNote"></span>
+      </div>
+      <div class="spine-scroll">
+        <div class="spine" id="spine">
+          <svg id="linkLayer"></svg>
+          <div class="col" data-col="0" id="col0"><div class="col-h"><span class="lvl">SLQF Level 3 &middot; Diploma</span><span class="yr">Year 1</span><span class="cr">11 modules &middot; 37 credits</span></div></div>
+          <div class="col" data-col="1" id="col1"><div class="col-h"><span class="lvl">SLQF Level 4 &middot; Higher National Diploma</span><span class="yr">Year 2</span><span class="cr">13 modules &middot; 39 credits</span></div></div>
+          <div class="col cu" data-col="2" id="col2"><div class="col-h"><span class="lvl">Coventry &middot; FHEQ Level 5</span><span class="yr">Level 5 (shared)</span><span class="cr">Year 3 &middot; 120 credits</span></div></div>
+          <div class="col cu" data-col="3" id="col3"><div class="col-h"><span class="lvl">Coventry &middot; FHEQ Level 6</span><span class="yr">Level 6 (two tracks)</span><span class="cr">Year 4 &middot; 120 credits</span></div></div>
+        </div>
+      </div>
+
+      <div class="cap-note"><b>Continuing totals shown.</b> The Diploma and HND exit awards each add a separate 4-credit Exit Block taken only by exiting students (Diploma exit 41 credits / 13 modules; HND exit 43 credits / 15 modules). CREST is a mandatory non-credit component and is not counted in the Year 2 credit total. A Level 6 student follows one track; the Ethical Hacking and Network Engineering track modules are alternatives, both prepared by the HND.</div>
+
+      <!-- DETAIL PANEL -->
+      <div class="panel" id="panel">
+        <div class="panel-h">
+          <div><h3 id="pTitle"></h3><div class="p-tags" id="pTags"></div></div>
+        </div>
+        <div class="panel-grid">
+          <div class="pcell"><h4>Builds on (feeders)</h4><div id="pUp"></div></div>
+          <div class="pcell"><h4>Feeds into (consumers)</h4><div id="pDown"></div></div>
+          <div class="pcell covers"><h4>Scope - covers</h4><p class="body" id="pCovers"></p></div>
+          <div class="pcell excl"><h4>Scope - excludes</h4><p class="body" id="pExcl"></p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL CARDS -->
+  <div class="sec">
+    <div class="sec-h"><span class="n">2</span><h2>Module records</h2>
+      <p>Full detail for every Year 1 and Year 2 module: preparation, downstream targets, scope boundary and exit-award relevance.</p>
+    </div>
+    <div class="sec-body" id="cardsHost"></div>
+  </div>
+
+  <!-- COVENTRY REVERSE -->
+  <div class="sec">
+    <div class="sec-h"><span class="n">3</span><h2>Coventry destination - preparation received</h2>
+      <p>The consumer's-eye view: for each Level 5 and 6 module, the Years 1 and 2 modules that prepare it.</p>
+    </div>
+    <div class="sec-body">
+      <table class="cu"><thead><tr>
+        <th style="width:96px">Stage / track</th><th>Module</th><th style="width:64px">Credits</th>
+        <th>Prepared by (Years 1 and 2)</th></tr></thead>
+        <tbody id="cuBody"></tbody>
+      </table>
+      <p style="font-size:11px;color:var(--dgrey);margin:12px 0 0">Feeders in normal weight are hard preparation; those marked <span style="border:1px solid var(--line);border-radius:3px;padding:0 4px;font-size:10px;font-weight:700;color:var(--dgrey)">supporting</span> are indicative or contextual. Level 5 modules are shared by both tracks; Level 6 modules are marked Shared, EH (Ethical Hacking) or NE (Network Engineering). Some Level 6 modules are prepared chiefly by the Level 5 stage and so show few or no direct Year 1-2 feeders.</p>
+    </div>
+  </div>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA - Network Engineering and Cybersecurity (NEC) pathway, v8.1
+   (module records v1.0, 18-19 Jul 2026). Feeds the Coventry
+   BSc (Hons) Applied Cybersecurity (two tracks share Level 5).
+   Coventry modules are named, not NB-coded. track: shared|eh|ne
+   ============================================================ */
+const CU = {
+  // Level 5 - Year 3, shared in full
+  cu_cryptosec:{title:'Cybersecurity and Cryptography',cr:20,lvl:5,sem:'Y3 S1',track:'shared'},
+  cu_audit:{title:'Security Audit and Testing',cr:20,lvl:5,sem:'Y3 S1',track:'shared'},
+  cu_law:{title:'Cyber Law and Legal Frameworks',cr:20,lvl:5,sem:'Y3 S1',track:'shared'},
+  cu_forensics:{title:'Digital Forensics and Incident Analysis',cr:20,lvl:5,sem:'Y3 S2',track:'shared'},
+  cu_ane:{title:'Advanced Network Engineering',cr:20,lvl:5,sem:'Y3 S2',track:'shared'},
+  cu_industry:{title:'Industry Horizons and Professional Practices',cr:10,lvl:5,sem:'Y3 S2',track:'shared'},
+  cu_ecs:{title:'Effective Communication Skills',cr:10,lvl:5,sem:'Y3 S2',track:'shared'},
+  // Level 6 - Year 4, shared
+  cu_appcyber:{title:'Applied Cybersecurity',cr:20,lvl:6,sem:'Y4 S1',track:'shared'},
+  cu_aisecops:{title:'AI-Augmented Security Operations',cr:10,lvl:6,sem:'Y4 S1',track:'shared'},
+  cu_resprep:{title:'Research Project Preparation',cr:10,lvl:6,sem:'Y4 S1',track:'shared'},
+  cu_cloudsec:{title:'Cloud Security',cr:20,lvl:6,sem:'Y4 S2',track:'shared'},
+  cu_resdel:{title:'Research Project Delivery',cr:20,lvl:6,sem:'Y4 S2',track:'shared'},
+  // Level 6 - Ethical Hacking track
+  cu_appeh:{title:'Applied Ethical Hacking',cr:20,lvl:6,sem:'Y4 S1',track:'eh'},
+  cu_ai4cyber:{title:'AI for Cybersecurity',cr:20,lvl:6,sem:'Y4 S2',track:'eh'},
+  // Level 6 - Network Engineering track
+  cu_naa:{title:'Network Architecture and Automation',cr:20,lvl:6,sem:'Y4 S1',track:'ne'},
+  cu_ais:{title:'Advanced Infrastructure Security',cr:20,lvl:6,sem:'Y4 S2',track:'ne'}
+};
+
+const MODS = [
+  /* ---------------- YEAR 1 (SLQF Level 3) ---------------- */
+  {id:'foc',year:1,title:'Fundamentals of Computing',code:'NB-SOCE-L3-CM-TT-01',cr:4,type:'cmn',typeLabel:'Common / Taught',
+   role:'The load-bearing common for NEC (the pathway carries no Programming Concepts); heads the systems and networking stack.',
+   feeds:[{to:'osi',note:'operational operating-system awareness'},{to:'netfund',note:'operational network awareness, networks-weighted'},{to:'web',note:'systems awareness'},{to:'infosec',note:'systems and network awareness'},{to:'cu_cryptosec',soft:true,note:'systems-awareness context at Level 5'}],
+   covers:'Hardware and software fundamentals; number systems and data representation; operating-system and computer-network concepts at operational level; computing-ethics awareness.',
+   excludes:'Digital logic, electronics and computer organisation (Digital Electronics and Logic Design); programming; discipline-specific infrastructure depth.',
+   exit:'Baseline computational literacy with operational systems and networks grasp, underpinning the Diploma-level profile.'},
+
+  {id:'math',year:1,title:'Mathematical Thinking',code:'NB-SOCE-L3-CM-TT-02',cr:4,type:'cmn',typeLabel:'Common / Taught',
+   role:'Common mathematical backing; the cryptography chain is carried in pathway space, this module strengthens it.',
+   feeds:[{to:'cu_cryptosec',soft:true,note:'elementary modular arithmetic - common backing to the cryptography chain'}],
+   covers:'Discrete structures (sets, relations, functions); linear algebra foundations (vectors, matrix arithmetic); baseline probability; elementary modular arithmetic supporting Level 5 applied cryptography; a hands-on, pragmatic treatment paced for the cohort.',
+   excludes:'Statistical inference machinery; eigen-decomposition and calculus; applied statistical modelling. Linear algebra and probability have no NEC pathway consumer and are carried as common provision.',
+   exit:'Quantitative-literacy component of the Diploma-level profile.'},
+
+  {id:'algo',year:1,title:'Algorithmic Thinking',code:'NB-SOCE-L3-CM-TT-03',cr:3,type:'cmn',typeLabel:'Common / Taught',
+   role:'',
+   feeds:[{to:'applied_prog',note:'language-independent problem decomposition and algorithmic reasoning'}],
+   covers:'Problem decomposition; pseudocode and flow representation; searching and sorting concepts; elementary data structures conceptually; complexity intuition.',
+   excludes:'Implementation in a production language; formal algorithm analysis.',
+   exit:'Core reasoning competency in the Diploma-level profile.'},
+
+  {id:'deld',year:1,title:'Digital Electronics and Logic Design',code:'NB-SOCE-L3-CM-TT-04',cr:3,type:'cmn',typeLabel:'Common / Taught (laboratory)',
+   role:'New at v8.1. Hardware literacy and the logic-to-organisation bridge for the whole cohort; the hardware half of the NEC forensics substrate.',
+   feeds:[{to:'cu_forensics',note:'hardware literacy - the device and physical-evidence layer of digital forensics'}],
+   covers:'Combinational and sequential logic design; digital-electronics fundamentals at introductory laboratory level; the bridge from logic to computer organisation and processor operation; number systems applied in hardware; laboratory practice throughout.',
+   excludes:'Embedded-systems programming; electronics-engineering depth; the systems-administration substrate (Operating Systems and Infrastructure).',
+   exit:'Hardware-literacy component of the Diploma-level profile.'},
+
+  {id:'ecs1',year:1,title:'Effective Communication Skills I',code:'NB-SOCE-L3-CM-IS-01',cr:2,type:'int',typeLabel:'Common / Integrative Skills',
+   role:'',
+   feeds:[{to:'ecs2'},{to:'cu_ecs',note:'the numbered communication spine'}],
+   covers:'Foundational written and verbal communication; audience awareness; introductory professional presentation.',
+   excludes:'Advanced interpersonal and reflective communication (ECS II and Level 5 Effective Communication Skills).',
+   exit:'Professional-communication component of the Diploma-level profile.'},
+
+  {id:'cproj',year:1,title:'Creative Project',code:'NB-SOCE-L3-CM-IS-02',cr:3,type:'int',typeLabel:'Common / Integrative Skills',
+   role:'',
+   feeds:[{to:'cap',note:'prior supervised-project experience'},{to:'cu_resprep',soft:true,note:'the project and research-readiness spine'}],
+   covers:'Supervised project work; ideation and delivery; presentation of outcomes; project ownership.',
+   excludes:'Pathway-specific applied capstone depth (Capstone Project); degree-level independent research (Level 6 Research Project).',
+   exit:'Project and ownership evidence for the Diploma-level profile.'},
+
+  {id:'osi',year:1,title:'Operating Systems and Infrastructure',code:'NB-SOCE-L3-NEC-TT-01',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'Linux-led administration substrate; the Windows and domain awareness is a light on-ramp only.',
+   feeds:[{to:'lsa',note:'the administration substrate at depth'},{to:'wsds',note:'the Windows and domain-awareness on-ramp'},{to:'cu_forensics',note:'operating-system internals substrate'}],
+   covers:'Operating-system installation and configuration; processes, memory, storage and file systems from the administrator view; users, groups, permissions and ACLs; services; shell administration - predominantly Linux, with a light Windows local-identity and directory-service strand.',
+   excludes:'Digital logic and electronics (Digital Electronics and Logic Design); Windows Server and Active Directory administration (Windows Server and Directory Services); programming (Applied Programming for Networks and Security).',
+   exit:'Core infrastructure competency for the Diploma profile.'},
+
+  {id:'netfund',year:1,title:'Networking Fundamentals',code:'NB-SOCE-L3-NEC-TT-02',cr:4,type:'swe',typeLabel:'Pathway / Taught',
+   role:'The CCNA ITN core and the networking foundation of the pathway.',
+   feeds:[{to:'ene',note:'the routing and switching core builds on this'},{to:'wsds',note:'services concept and addressing'},{to:'cloud',note:'addressing and services'},{to:'nso',note:'network grounding'}],
+   covers:'The CCNA ITN core - network models and Ethernet, IPv4/IPv6 addressing and subnetting, TCP/UDP, media and devices, basic device configuration; the network-services concept and application-layer view (DNS and DHCP as protocols); binary and hexadecimal in an addressing context.',
+   excludes:'Enterprise routing and switching configuration (Enterprise Network Engineering); network-services implementation (Linux Server Administration; Windows Server and Directory Services); wireless beyond the fundamentals concept.',
+   exit:'Foundational networking competency; the design target is the Level 5 feeder, not CCNA certification.'},
+
+  {id:'applied_prog',year:1,title:'Applied Programming for Networks and Security',code:'NB-SOCE-L3-NEC-TT-03',cr:4,type:'swe',typeLabel:'Pathway / Taught',
+   role:'The Python-first programming and scripting spine; carries cryptography mechanics in code (touchpoint 1, held at 4 credits, must not weaken).',
+   feeds:[{to:'scripting',note:'the automation spine'},{to:'dms',note:'the SQL support strand continues'},{to:'ehas',note:'scripting for tooling'},{to:'cu_cryptosec',note:'cryptography touchpoint 1 - mechanics and concepts in code'},{to:'cu_naa',soft:true,note:'the Python-first spine, NE track'},{to:'cu_aisecops',soft:true,note:'automation pipelines'}],
+   covers:'Python-first programming (control flow, data structures, functions, file and data handling); Bash scripting; SQL support (querying, basic manipulation); modular arithmetic taught in code with the concepts named explicitly - modular exponentiation, GCD, primes, and why each underpins encryption; networking and security applied contexts throughout.',
+   excludes:'Production software engineering; automation at scale (Scripting and Automation); formal cryptography (Level 5).',
+   exit:'Applied-programming competency; the Python-first spine and cryptography touchpoint 1.'},
+
+  {id:'web',year:1,title:'Web and Internet Technologies',code:'NB-SOCE-L3-NEC-TT-04',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'',
+   feeds:[{to:'ehas',note:'web fundamentals underpin the web-attack case studies'},{to:'cu_audit',soft:true,note:'web-security awareness'},{to:'cu_appeh',soft:true,note:'web context for Level 6 offensive work'}],
+   covers:'Web and internet architecture; HTTP and HTTPS; HTML, CSS and client-server basics; how web applications are structured; web-security awareness.',
+   excludes:'Application-security depth and offensive web testing (Ethical Hacking and Application Security); web-application development (outside the NEC mission).',
+   exit:'Web-literacy competency in the Diploma-level profile.'},
+
+  {id:'infosec',year:1,title:'Information Security Fundamentals',code:'NB-SOCE-L3-NEC-TT-05',cr:4,type:'swe',typeLabel:'Pathway / Taught',
+   role:'Retitled from Introduction to Cybersecurity. The security-operations vertical head; cryptography touchpoint 2 and the GenAI-risk seed. Anchors the cybersecurity half of the award title.',
+   feeds:[{to:'nso',note:'head of the security-operations vertical'},{to:'ehas',note:'security concepts and identity/access management'},{to:'cu_cryptosec',note:'cryptography touchpoint 2 - public-key meaning'},{to:'cu_audit',soft:true,note:'security foundations'},{to:'cu_aisecops',soft:true,note:'GenAI-risk seed'},{to:'cu_ai4cyber',soft:true,note:'GenAI-risk seed'}],
+   covers:'The confidentiality-integrity-availability triad and security principles; the threat landscape, attack lifecycle and defensive-operations awareness; symmetric and asymmetric encryption conceptually, connecting modular arithmetic to public-key cryptography; identity and access management concepts; a short unit on generative-AI tooling and its first risks.',
+   excludes:'Security operations at depth (Network and Security Operations); offensive testing (Ethical Hacking and Application Security); directory implementation (Windows Server and Directory Services); formal cryptography (Level 5).',
+   exit:'Foundational security competency in the Diploma-level profile.'},
+
+  /* ---------------- YEAR 2 (SLQF Level 4) ---------------- */
+  {id:'ene',year:2,title:'Enterprise Network Engineering',code:'NB-SOCE-L4-NEC-TT-01',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'The routing and switching core; the tightest module in the programme and the first refusal point for scope pressure.',
+   feeds:[{to:'cu_ane',note:'Level 5 Advanced Network Engineering - the primary chain'},{to:'cu_naa',note:'Network Architecture and Automation, NE track'}],
+   covers:'The SRWE core - VLANs, inter-VLAN routing, spanning tree, EtherChannel, static routing; selected ENSA core - single-area OSPF, ACLs, NAT; wireless fundamentals only.',
+   excludes:'Network-services implementation; wireless defence (Network and Security Operations) or attack (Ethical Hacking and Application Security); full CCNA ENSA breadth such as WAN technologies and QoS depth.',
+   exit:'Core enterprise-networking competency; the networking half of the award title.'},
+
+  {id:'lsa',year:2,title:'Linux Server Administration',code:'NB-SOCE-L4-NEC-TT-02',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'Retitled from Server Administration; the Windows content moved to Windows Server and Directory Services.',
+   feeds:[{to:'cu_ane',soft:true,note:'server-side infrastructure'},{to:'cu_forensics',note:'Linux systems evidence'},{to:'scripting',soft:true,note:'supports the automation spine'}],
+   covers:'Linux server administration at depth - services, storage, shell administration, hardening; Linux-side network-services implementation (DNS, DHCP, web, NTP).',
+   excludes:'Windows Server and Active Directory (Windows Server and Directory Services); routing and switching (Enterprise Network Engineering); virtualisation platforms (Virtualisation Technologies).',
+   exit:'Linux systems competency in the HND-level profile.'},
+
+  {id:'wsds',year:2,title:'Windows Server and Directory Services',code:'NB-SOCE-L4-NEC-TT-03',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'The thirteenth Year 2 module (new at v8.1). Owns enterprise identity - Active Directory and the Windows security baseline; "who you are" in the identity vertical.',
+   feeds:[{to:'cu_cryptosec',note:'authentication protocols, Kerberos'},{to:'cu_audit',note:'access-control auditing'},{to:'cu_appeh',note:'Active Directory attack paths - EH track'},{to:'cu_ais',note:'identity infrastructure - NE track'}],
+   covers:'Windows Server administration; Active Directory Domain Services - domain controllers, organisational units, Group Policy, the domain identity lifecycle; Active-Directory-integrated DNS; a Windows security baseline; identity as managed infrastructure.',
+   excludes:'Identity defence and monitoring (Network and Security Operations); identity attack (Ethical Hacking and Application Security); Linux administration (Linux Server Administration).',
+   exit:'Enterprise identity and directory competency in the HND-level profile.'},
+
+  {id:'virt',year:2,title:'Virtualisation Technologies',code:'NB-SOCE-L4-NEC-TT-04',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'',
+   feeds:[{to:'cloud',note:'virtualisation underpins cloud'},{to:'cu_forensics',note:'forensics and incident environments'},{to:'cu_ane',soft:true,note:'virtualised networking and SDN awareness'}],
+   covers:'Hypervisors and virtual machines; virtual networking and storage; containers at introductory level; virtualisation as the forensics and laboratory substrate.',
+   excludes:'Cloud service and deployment models (Cloud Technologies); production orchestration at scale.',
+   exit:'Virtualisation competency in the HND-level profile.'},
+
+  {id:'cloud',year:2,title:'Cloud Technologies',code:'NB-SOCE-L4-NEC-TT-05',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'The solid Cloud Technologies foundation the degree requires; the feeder, not the security module.',
+   feeds:[{to:'cu_cloudsec',note:'Level 6 Cloud Security - the primary cloud-continuity chain'}],
+   covers:'Cloud service and deployment models; core cloud infrastructure services; a cloud identity and access-management touchpoint; cloud networking basics.',
+   excludes:'Cloud security at depth (Level 6 Cloud Security); virtualisation internals (Virtualisation Technologies).',
+   exit:'Cloud competency in the HND-level profile.'},
+
+  {id:'nso',year:2,title:'Network and Security Operations',code:'NB-SOCE-L4-NEC-TT-06',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'Cleanly defensive - security operations, identity defence and wireless defence.',
+   feeds:[{to:'cu_audit',note:'Level 5 Security Audit and Testing'},{to:'cu_cryptosec',note:'defensive operations'},{to:'cu_forensics',note:'the SOC and incident-analysis half'},{to:'cu_aisecops',note:'the SOC content it ladders to'}],
+   covers:'Security operations and monitoring; SOC awareness; system and network hardening in operation; identity defence (authentication monitoring, credential-attack detection, multi-factor authentication); wireless defence (WPA2 and WPA3, segmentation, rogue-access-point detection).',
+   excludes:'The hardening baseline configuration itself (Windows Server and Directory Services); offensive testing (Ethical Hacking and Application Security); identity administration (Windows Server and Directory Services).',
+   exit:'Security-operations competency in the HND-level profile.'},
+
+  {id:'ehas',year:2,title:'Ethical Hacking and Application Security',code:'NB-SOCE-L4-NEC-TT-07',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'Name confirmed at v8.1 (working name at design was Applied Security Testing). The offensive-security module and the Ethical Hacking track on-ramp; keeps a defensive-validation counterweight.',
+   feeds:[{to:'cu_appeh',note:'Level 6 Applied Ethical Hacking, EH track - the primary offensive feeder'},{to:'cu_audit',soft:true,note:'ladders by intent'}],
+   covers:'Ethical-hacking method (reconnaissance, scanning, vulnerability assessment, exploitation basics); application security (web-attack techniques, secure-testing concepts); wireless attacks; identity and credential attacks and Active Directory misconfiguration; a retained defensive-validation counterweight.',
+   excludes:'Security operations and defence (Network and Security Operations); malware analysis and reverse engineering (Level 6 research territory); identity administration (Windows Server and Directory Services).',
+   exit:'Offensive-security competency in the HND-level profile; the recruitment-facing module.'},
+
+  {id:'scripting',year:2,title:'Scripting and Automation',code:'NB-SOCE-L4-NEC-TT-08',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'',
+   feeds:[{to:'cu_naa',note:'Network Architecture and Automation, NE track'},{to:'cu_aisecops',note:'automation pipelines'}],
+   covers:'Automation of networking and systems tasks; scripting for infrastructure and security workflows; introductory infrastructure-as-code concepts; a breadth of automation tooling.',
+   excludes:'Programming fundamentals (Applied Programming for Networks and Security); production software engineering.',
+   exit:'Automation competency in the HND-level profile.'},
+
+  {id:'dms',year:2,title:'Data Management and Security',code:'NB-SOCE-L4-NEC-TT-09',cr:3,type:'swe',typeLabel:'Pathway / Taught',
+   role:'A pathway data-security module (distinct from the cluster Data Models and Management Systems, which NEC does not carry). Owns "what data you may touch" in the identity vertical.',
+   feeds:[{to:'cu_forensics',note:'data handling'},{to:'cu_law',note:'the privacy and regulatory seed'},{to:'cu_aisecops',soft:true,note:'security-data literacy'}],
+   covers:'Data modelling and database use; securing data - classification, data-level access control, encryption at rest, backup and recovery; privacy and regulatory awareness.',
+   excludes:'Security operations (Network and Security Operations); offensive testing (Ethical Hacking and Application Security); directory identity (Windows Server and Directory Services); production database administration.',
+   exit:'Data-management-and-security competency in the HND-level profile.'},
+
+  {id:'crest',year:2,title:'Entrepreneurship, Creativity and Innovation (CREST)',code:'NB-SOCE-L4-CM-IS-01',cr:0,type:'int',typeLabel:'Common / Integrative Skills',noncredit:true,
+   role:'Mandatory non-credit completion component; enterprise-skills evidence without credit contribution.',
+   feeds:[],
+   covers:'Enterprise thinking; creativity and innovation methods; opportunity identification.',
+   excludes:'Degree-level leadership theory and organisational evaluation.',
+   exit:'Mandatory completion component of the HND award.'},
+
+  {id:'ecs2',year:2,title:'Effective Communication Skills II',code:'NB-SOCE-L4-CM-IS-02',cr:2,type:'int',typeLabel:'Common / Integrative Skills',
+   role:'Carries additional research-readiness weight given the compression of ECS I.',
+   feeds:[{to:'cu_ecs',note:'the numbered communication spine'},{to:'cu_resprep',soft:true,note:'research-readiness'}],
+   covers:'Advanced written and verbal communication; team and interpersonal communication; reflective practice; additional research-readiness weight.',
+   excludes:'The interpersonal-theory depth of Level 5 Effective Communication Skills.',
+   exit:'Communication and research-readiness competency in the HND-level profile.'},
+
+  {id:'cap',year:2,title:'Capstone Project',code:'NB-SOCE-L4-NEC-SK-01',cr:5,type:'skl',typeLabel:'Pathway / Skills',
+   role:'Integrates the Year 1-2 spine; carries academic-writing and research-readiness into the Level 6 Research Project.',
+   feeds:[{to:'cu_resprep',note:'Level 6 Research Project Preparation'},{to:'cu_resdel',note:'Level 6 Research Project Delivery'}],
+   covers:'A supervised applied project integrating networking, security and systems competencies, with academic-writing and research-readiness development.',
+   excludes:'Taught subject content.',
+   exit:'Capstone competency evidence in the HND-level profile.'},
+
+  {id:'itrain',year:2,title:'Industrial Training',code:'NB-SOCE-L4-NEC-SK-02',cr:5,type:'skl',typeLabel:'Pathway / Skills',
+   role:'A placement block outside teaching weeks (1 credit = 100 hours).',
+   feeds:[{to:'cu_industry',soft:true,note:'professional-practice readiness across Levels 5 and 6'}],
+   covers:'A placement (external or NIBM-sourced) of approximately 12 weeks full-time, scheduled outside teaching weeks.',
+   excludes:'Taught subject content.',
+   exit:'Workplace-competence evidence central to the HND-level profile.'}
+];
+
+/* ---- indexes ---- */
+const M = {}; MODS.forEach(m=>M[m.id]=m);
+const colOf = id => M[id] ? (M[id].year===1?0:1) : (CU[id].lvl===5?2:3);
+const nameOf = id => M[id]? M[id].title : CU[id].title;
+const codeOf = id => (M[id]&&M[id].code)? M[id].code : null; // Coventry modules have no code
+const trackName = {shared:'SHARED', eh:'EH', ne:'NE'};
+
+const revIndex = {};
+MODS.forEach(m=> m.feeds.forEach(f=>{ (revIndex[f.to]=revIndex[f.to]||[]).push({from:m.id,soft:f.soft,note:f.note}); }));
+
+const typeName = {cmn:'Common - institution-wide', swe:'Pathway - taught', int:'Integrative skills', skl:'Pathway - project / placement'};
+
+/* ============================================================ RENDER - spine chips ============================================================ */
+const cols = [document.getElementById('col0'),document.getElementById('col1'),document.getElementById('col2'),document.getElementById('col3')];
+const chipEls = {};
+function addSub(col,label){const d=document.createElement('div');d.className='subhead';d.textContent=label;col.appendChild(d);}
+
+addSub(cols[0],'Common core - Tier 1');
+['foc','math','algo','deld'].forEach(id=>mkChip(M[id],0));
+addSub(cols[0],'Integrative skills');
+['ecs1','cproj'].forEach(id=>mkChip(M[id],0));
+addSub(cols[0],'Pathway - taught');
+['osi','netfund','applied_prog','web','infosec'].forEach(id=>mkChip(M[id],0));
+
+addSub(cols[1],'Pathway - taught');
+['ene','lsa','wsds','virt','cloud','nso','ehas','scripting','dms'].forEach(id=>mkChip(M[id],1));
+addSub(cols[1],'Integrative skills');
+['crest','ecs2'].forEach(id=>mkChip(M[id],1));
+addSub(cols[1],'Pathway - project / placement');
+['cap','itrain'].forEach(id=>mkChip(M[id],1));
+
+function mkChip(m,ci){
+  const el=document.createElement('div');
+  el.className='chip t-'+m.type; el.dataset.id=m.id;
+  const crb = m.noncredit? '<span class="brg" style="background:var(--dgrey)">NON-CREDIT</span>' : `<span class="cr-badge">${m.cr} cr</span>`;
+  el.innerHTML=`<div class="ncode">${m.code}</div><div class="ct">${m.title}</div>
+    <div class="cmeta">${crb}<span>${m.typeLabel.replace('Common / ','').replace('Pathway / ','')}</span></div>`;
+  el.addEventListener('click',ev=>{ev.stopPropagation();select(m.id);});
+  cols[ci].appendChild(el); chipEls[m.id]=el;
+}
+function cuChip(col,id){
+  const c=CU[id];
+  const el=document.createElement('div'); el.className='chip t-cu'; el.dataset.id=id;
+  const trk = (c.track&&c.track!=='shared')? `<span class="trk ${c.track}">${trackName[c.track]}</span>` : '';
+  el.innerHTML=`<div class="ct">${c.title}</div><div class="cmeta"><span class="cr-badge">${c.cr} cr</span><span>${c.sem}</span>${trk}</div>`;
+  el.addEventListener('click',ev=>{ev.stopPropagation();select(id);});
+  col.appendChild(el); chipEls[id]=el;
+}
+addSub(cols[2],'Semester 1');
+['cu_cryptosec','cu_audit','cu_law'].forEach(id=>cuChip(cols[2],id));
+addSub(cols[2],'Semester 2');
+['cu_forensics','cu_ane','cu_industry','cu_ecs'].forEach(id=>cuChip(cols[2],id));
+addSub(cols[3],'Shared (both tracks)');
+['cu_appcyber','cu_aisecops','cu_resprep','cu_cloudsec','cu_resdel'].forEach(id=>cuChip(cols[3],id));
+addSub(cols[3],'Ethical Hacking track');
+['cu_appeh','cu_ai4cyber'].forEach(id=>cuChip(cols[3],id));
+addSub(cols[3],'Network Engineering track');
+['cu_naa','cu_ais'].forEach(id=>cuChip(cols[3],id));
+
+/* ============================================================ SVG link drawing ============================================================ */
+const svg=document.getElementById('linkLayer'); const spine=document.getElementById('spine');
+const NS='http://www.w3.org/2000/svg';
+svg.innerHTML=`<defs>
+  <marker id="arrDown" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#EB5600"/></marker>
+  <marker id="arrUp" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1A9988"/></marker>
+</defs>`;
+function clearLines(){[...svg.querySelectorAll('path')].forEach(p=>p.remove());}
+function drawEdge(fromId,toId,dir,soft){
+  const a=chipEls[fromId], b=chipEls[toId]; if(!a||!b) return;
+  const base=spine.getBoundingClientRect();
+  const ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect();
+  const ca=colOf(fromId), cb=colOf(toId);
+  let x1,y1,x2,y2,d;
+  if(ca===cb){
+    x1=ra.right-base.left; y1=ra.top-base.top+ra.height/2;
+    x2=rb.right-base.left; y2=rb.top-base.top+rb.height/2;
+    const bow=46; d=`M ${x1} ${y1} C ${x1+bow} ${y1}, ${x2+bow} ${y2}, ${x2} ${y2}`;
+  } else {
+    x1=ra.right-base.left; y1=ra.top-base.top+ra.height/2;
+    x2=rb.left-base.left;  y2=rb.top-base.top+rb.height/2;
+    const dx=(x2-x1)*0.42; d=`M ${x1} ${y1} C ${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}`;
+  }
+  const p=document.createElementNS(NS,'path');
+  p.setAttribute('d',d); p.setAttribute('fill','none');
+  p.setAttribute('stroke',dir==='down'?'#EB5600':'#1A9988');
+  p.setAttribute('stroke-width', soft?'1.6':'2.2');
+  p.setAttribute('opacity', soft?'0.72':'0.92');
+  if(soft) p.setAttribute('stroke-dasharray','5 4');
+  p.setAttribute('marker-end', dir==='down'?'url(#arrDown)':'url(#arrUp)');
+  svg.appendChild(p);
+}
+
+/* ============================================================ selection ============================================================ */
+let selId=null;
+function select(id){
+  selId=id;
+  Object.values(chipEls).forEach(el=>el.classList.remove('sel','up','down','dim'));
+  clearLines();
+  const m=M[id];
+  const downstream = m ? m.feeds.map(f=>({id:f.to,soft:f.soft,note:f.note})) : [];
+  const upstream = (revIndex[id]||[]).map(r=>({id:r.from,soft:r.soft,note:r.note}));
+  const related=new Set([id]);
+  downstream.forEach(d=>related.add(d.id)); upstream.forEach(u=>related.add(u.id));
+  Object.entries(chipEls).forEach(([cid,el])=>{ if(!related.has(cid)) el.classList.add('dim'); });
+  chipEls[id].classList.add('sel');
+  downstream.forEach(d=>{chipEls[d.id]&&chipEls[d.id].classList.add('down'); drawEdge(id,d.id,'down',d.soft);});
+  upstream.forEach(u=>{chipEls[u.id]&&chipEls[u.id].classList.add('up'); drawEdge(u.id,id,'up',u.soft);});
+  document.getElementById('selNote').textContent = 'Showing lineage for: '+nameOf(id);
+  openPanel(id,upstream,downstream);
+}
+function relRow(o,dir){
+  const code=codeOf(o.id);
+  const codeHtml = code? `<span class="rcode">${code}</span> `:'';
+  const note = o.note? ` <span class="rnote">- ${o.note}</span>`:'';
+  const soft = o.soft? ` <span class="soft">indicative</span>`:'';
+  return `<div class="rel-item ${dir}">${codeHtml}<span class="rname">${nameOf(o.id)}</span>${note}${soft}</div>`;
+}
+function openPanel(id,up,down){
+  const isCU = !!CU[id];
+  document.getElementById('pTitle').textContent = nameOf(id);
+  const tags=[];
+  if(isCU){
+    const c=CU[id];
+    tags.push(`<span class="tag type tt-swe" style="background:var(--orange)">Coventry Level ${c.lvl}</span>`);
+    tags.push(`<span class="tag cr">${c.cr} credits</span>`);
+    tags.push(`<span class="tag cr">${c.sem}</span>`);
+    if(c.track&&c.track!=='shared') tags.push(`<span class="trk ${c.track}">${trackName[c.track]} track</span>`);
+    else if(c.lvl===6) tags.push(`<span class="trk sh">SHARED</span>`);
+  } else {
+    const m=M[id];
+    tags.push(`<span class="tag type tt-${m.type}">${typeName[m.type]}</span>`);
+    tags.push(`<span class="tag cr">${m.noncredit?'Non-credit (mandatory)':m.cr+' credits'}</span>`);
+    tags.push(`<span class="tag cr">${m.code}</span>`);
+  }
+  document.getElementById('pTags').innerHTML=tags.join('');
+  document.getElementById('pUp').innerHTML = up.length? up.map(o=>relRow(o,'up')).join('') : '<div style="font-size:12px;color:#9098a0">Entry-level module - no prior module required.</div>';
+  document.getElementById('pDown').innerHTML = down.length? down.map(o=>relRow(o,'down')).join('') : (isCU? '<div style="font-size:12px;color:#9098a0">Final validated destination.</div>':'<div style="font-size:12px;color:#9098a0">Mandatory completion component - no downstream feeder.</div>');
+  document.getElementById('pCovers').textContent = isCU? 'Delivered and specified by Coventry University under the validation agreement.' : M[id].covers;
+  document.getElementById('pExcl').textContent = isCU? '-' : M[id].excludes;
+  document.getElementById('panel').classList.add('open');
+}
+function reset(){
+  selId=null; clearLines();
+  Object.values(chipEls).forEach(el=>el.classList.remove('sel','up','down','dim'));
+  document.getElementById('selNote').textContent='';
+  document.getElementById('panel').classList.remove('open');
+}
+document.getElementById('resetBtn').addEventListener('click',reset);
+spine.addEventListener('click',reset);
+window.addEventListener('resize',()=>{ if(selId) select(selId); });
+
+/* ============================================================ RENDER - detail cards ============================================================ */
+const host=document.getElementById('cardsHost');
+const crText = m => m.noncredit? 'Non-credit' : (m.cr+' cr');
+function feedLine(m){
+  if(!m.feeds.length) return '<span style="color:#9098a0">None - mandatory completion component</span>';
+  return m.feeds.map(f=>{
+    const nm = nameOf(f.to);
+    const soft=f.soft?' <span class="softtag">indicative</span>':'';
+    return `<span class="f">${nm}${soft}</span>`;
+  }).join('<span style="color:#c3c9cb">&nbsp;&middot;&nbsp;</span>');
+}
+function prereqLine(id){
+  const up=revIndex[id]||[];
+  if(!up.length) return '<span style="color:#9098a0">Entry-level - none</span>';
+  return up.map(u=>{
+    const soft=u.soft?' <span class="softtag">indicative</span>':'';
+    return nameOf(u.from)+soft;
+  }).join('<span style="color:#c3c9cb">&nbsp;&middot;&nbsp;</span>');
+}
+function renderCards(year){
+  const band=document.createElement('div'); band.className='yr-band';
+  band.textContent = year===1? 'Year 1 - Diploma stage (SLQF Level 3)':'Year 2 - HND stage (SLQF Level 4)';
+  host.appendChild(band);
+  const grid=document.createElement('div'); grid.className='cards';
+  MODS.filter(m=>m.year===year).forEach(m=>{
+    const el=document.createElement('div'); el.className='card t-'+m.type;
+    el.innerHTML=`
+      <div class="ncode">${m.code}</div>
+      <div class="c-top"><h3>${m.title}</h3><span class="c-cr">${crText(m)}</span></div>
+      <div class="c-tags"><span class="tag type tt-${m.type}">${typeName[m.type]}</span>${m.noncredit?'<span class="tag" style="background:var(--dgrey);color:#fff">Non-credit</span>':''}</div>
+      ${m.role?`<div class="c-role">${m.role}</div>`:''}
+      <div class="grp feeds"><div class="lab"><span class="arrow up">&#9650;</span> Builds on</div><div class="val">${prereqLine(m.id)}</div></div>
+      <div class="grp feeds"><div class="lab"><span class="arrow">&#9660;</span> Feeds into</div><div class="val">${feedLine(m)}</div></div>
+      <div class="grp"><div class="covers-line"><b>Covers:</b> ${m.covers}</div></div>
+      <div class="grp"><div class="covers-line excl-line"><b>Excludes:</b> ${m.excludes}</div></div>
+      <div class="exit"><b>Exit-award relevance:</b> ${m.exit}</div>`;
+    grid.appendChild(el);
+  });
+  host.appendChild(grid);
+}
+renderCards(1); renderCards(2);
+
+/* ============================================================ RENDER - Coventry reverse table ============================================================ */
+const cuBody=document.getElementById('cuBody');
+function cuFeeders(id){
+  const up=revIndex[id]||[];
+  if(!up.length) return '<span class="none">No direct Year 1-2 feeder - prepared chiefly by the Level 5 stage.</span>';
+  const hard=up.filter(u=>!u.soft).map(u=>`<span class="fd">${nameOf(u.from)}</span>`);
+  const soft=up.filter(u=>u.soft).map(u=>`<span class="fd soft">${nameOf(u.from)} <span class="softtag">supporting</span></span>`);
+  return [...hard,...soft].join('<span style="color:#c3c9cb">&nbsp;&middot;&nbsp;</span>');
+}
+function stageTrack(c){
+  if(c.lvl===5) return '<span class="sh">L5</span>';
+  return `L6 &middot; <span class="${c.track}">${trackName[c.track]}</span>`;
+}
+function cuRows(ids,label){
+  const lr=document.createElement('tr'); lr.className='lvl-row';
+  lr.innerHTML=`<td colspan="4">${label}</td>`; cuBody.appendChild(lr);
+  ids.forEach(id=>{const c=CU[id]; const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="trkcell">${stageTrack(c)}</td><td class="cu-title">${c.title} <span class="sem">(${c.sem})</span></td><td class="cr">${c.cr} cr</td><td class="feeders">${cuFeeders(id)}</td>`;
+    cuBody.appendChild(tr);});
+}
+cuRows(['cu_cryptosec','cu_audit','cu_law','cu_forensics','cu_ane','cu_industry','cu_ecs'],'Level 5 - Year 3 (shared)');
+cuRows(['cu_appcyber','cu_aisecops','cu_resprep','cu_cloudsec','cu_resdel'],'Level 6 - Year 4 (shared)');
+cuRows(['cu_appeh','cu_ai4cyber'],'Level 6 - Ethical Hacking track');
+cuRows(['cu_naa','cu_ais'],'Level 6 - Network Engineering track');
+
+document.getElementById('foot').innerHTML =
+ 'Applied Cybersecurity (Network Engineering and Cybersecurity) - Feeder and Consumer Map, v8.1 (module records v1.0). Years 1 and 2 module architecture at design stage; the Coventry Applied Cybersecurity Levels 5 and 6 are fixed by the validation agreement (Level 5 shared; Level 6 in Ethical Hacking and Network Engineering tracks). '+
+ 'Credit values follow the SLQF (2015) basis of 50 notional hours per credit (Industrial Training 100). Credit values, hours distributions and assessment weightings are confirmed at module-specification stage. This document maps prerequisite and feeder relationships only. '+
+ 'Generated '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+'.';
+</script>
+</body>
+</html>
