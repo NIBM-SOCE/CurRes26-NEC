@@ -201,10 +201,7 @@
 
   <!-- MASTHEAD -->
   <div class="mast">
-<<<<<<< HEAD
       <div style="font-size:11px;color:var(--dgrey);margin:0 0 8px">Map version 1.1 - 15 August 2026. Builds-on and Feeds-into relations generated from the module records at v1.3.</div>
-=======
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
     <div class="eyebrow">NIBM School of Computing and Engineering &nbsp;&middot;&nbsp; Curriculum Restructuring 2026/2027 &nbsp;&middot;&nbsp; <span class="vchip">2026 Issue</span></div>
     <h1>Feeder and Consumer Map - Applied Cybersecurity (Network Engineering and Cybersecurity)</h1>
     <div class="bars"><span class="b1"></span><span class="b2"></span></div>
@@ -322,11 +319,7 @@
 
 <script>
 /* ============================================================
-<<<<<<< HEAD
    DATA - Network Engineering and Cybersecurity (NEC) pathway (module records v1.3). Feeds the Coventry
-=======
-   DATA - Network Engineering and Cybersecurity (NEC) pathway (module records v1.2). Feeds the Coventry
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    BSc (Hons) Applied Cybersecurity (two tracks share Level 5).
    Coventry modules are named, not NB-coded. track: shared|eh|ne
    ============================================================ */
@@ -380,38 +373,25 @@ const MODS = [
    exit:'Core reasoning competency in the Diploma-level profile.'},
 
   {id:'deld',year:1,title:'Digital Electronics and Logic Design',code:'NB-SOCE-L3-CM-TT-04',cr:3,type:'cmn',typeLabel:'Common / Taught (laboratory)',
-<<<<<<< HEAD
    role:'Hardware literacy carried institution-wide for the whole cohort, not an NEC-specific requirement; on the NEC side it supplies the device and physical-evidence layer that Level 5 Digital Forensics and Incident Analysis builds on.',
    feeds:[{to:'cu_forensics'}],
    builds:[{from:'foc'}],
-=======
-   role:'Newly introduced. Hardware literacy and the logic-to-organisation bridge for the whole cohort; the hardware half of the NEC forensics substrate.',
-   feeds:[{to:'cu_forensics',note:'hardware literacy - the device and physical-evidence layer of digital forensics'}],
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    covers:'Combinational and sequential logic design; digital-electronics fundamentals at introductory laboratory level; the bridge from logic to computer organisation and processor operation; number systems applied in hardware; laboratory practice throughout.',
    excludes:'Embedded-systems programming; electronics-engineering depth; the systems-administration substrate (Operating Systems and Infrastructure).',
    exit:'Hardware-literacy component of the Diploma-level profile.'},
 
   {id:'ecs1',year:1,title:'Effective Communication Skills I',code:'NB-SOCE-L3-CM-IS-01',cr:2,type:'int',typeLabel:'Common / Integrative Skills',
    role:'',
-<<<<<<< HEAD
    feeds:[{to:'ecs2',note:'the professional communication strand continues'},{to:'cu_ecs'}],
    builds:[],
-=======
-   feeds:[{to:'ecs2'},{to:'cu_ecs',note:'the numbered communication spine'}],
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    covers:'Foundational written and spoken communication for academic and professional purposes; audience awareness and adaptation; introductory professional presentation; communication within a team.',
    excludes:'Advanced interpersonal, reflective and workplace communication (Effective Communication Skills II, and NB5006CEM at Level 5); entrepreneurship and innovation content (CREST).',
    exit:'Professional-communication component of the Diploma-level profile.'},
 
   {id:'cproj',year:1,title:'Creative Project',code:'NB-SOCE-L3-CM-IS-02',cr:3,type:'int',typeLabel:'Common / Integrative Skills',
    role:'',
-<<<<<<< HEAD
    feeds:[],
    builds:[],
-=======
-   feeds:[{to:'cap',note:'prior supervised-project experience'},{to:'cu_resprep',soft:true,note:'the project and research-readiness spine'}],
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    covers:'A facilitated Year 1 project integrating Year 1 learning; ideation, scoping and planning; supervised build and iteration; presentation and demonstration of outcomes; project ownership and structured reflection. Participation mode: a team-based build with an individually graded reflective component, with individual contribution defined during planning and evidenced through a contribution log.',
    excludes:'Pathway-specific applied capstone depth (Capstone Project); degree-level independent research (Level 6 Research Project).',
    exit:'Project and ownership evidence for the Diploma-level profile.'},
@@ -475,12 +455,8 @@ const MODS = [
 
   {id:'wsds',year:2,title:'Windows Server and Directory Services',code:'NB-SOCE-L4-NEC-TT-03',cr:3,type:'swe',typeLabel:'Pathway / Taught',
    role:'The thirteenth Year 2 module, newly introduced. Owns enterprise identity - Active Directory and the Windows security baseline; "who you are" in the identity vertical.',
-<<<<<<< HEAD
    feeds:[{to:'cu_ais',note:'identity infrastructure, NE track'},{to:'cu_cryptosec',note:'authentication protocols, Kerberos'},{to:'cu_audit',note:'access-control auditing'},{to:'cu_appeh',note:'Active Directory attack paths - the enterprise offensive spine'}],
    builds:[{from:'osi',note:'Windows and domain-awareness on-ramp'},{from:'netfund',note:'services concept and addressing'}],
-=======
-   feeds:[{to:'cu_cryptosec',note:'authentication protocols, Kerberos'},{to:'cu_audit',note:'access-control auditing'},{to:'cu_appeh',note:'Active Directory attack paths - EH track'},{to:'cu_ais',note:'identity infrastructure - NE track'}],
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    covers:'Windows Server administration; Active Directory Domain Services - domain controllers, organisational units, Group Policy, the domain identity lifecycle; Active-Directory-integrated DNS; a Windows security baseline; identity as managed infrastructure.',
    excludes:'Identity defence and monitoring (Network and Security Operations); identity attack (Ethical Hacking and Application Security); Linux administration (Linux Server Administration).',
    exit:'Enterprise identity and directory competency in the HND-level profile.'},
@@ -511,12 +487,8 @@ const MODS = [
 
   {id:'ehas',year:2,title:'Ethical Hacking and Application Security',code:'NB-SOCE-L4-NEC-TT-07',cr:3,type:'swe',typeLabel:'Pathway / Taught',
    role:'Name confirmed at issue (the design-stage working name was Applied Security Testing). The offensive-security module and the Ethical Hacking track on-ramp; keeps a defensive-validation counterweight.',
-<<<<<<< HEAD
    feeds:[{to:'cu_audit',note:'ladders by intent'},{to:'cu_appeh',note:'EH track'}],
    builds:[{from:'applied_prog',note:'scripting for tooling'},{from:'wsds',seq:true,note:'same-year sequencing requirement: the domain built there is the target surface for identity and Active Directory attack, and must be delivered before U6'},{from:'infosec',note:'security concepts, IAM'},{from:'web',note:'web fundamentals for web attacks'}],
-=======
-   feeds:[{to:'cu_appeh',note:'Level 6 Applied Ethical Hacking, EH track - the primary offensive feeder'},{to:'cu_audit',soft:true,note:'ladders by intent'}],
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    covers:'Ethical-hacking method (reconnaissance, scanning, vulnerability assessment, exploitation basics); application security (web-attack techniques, secure-testing concepts); wireless attacks; identity and credential attacks and Active Directory misconfiguration; a retained defensive-validation counterweight.',
    excludes:'Security operations and defence (Network and Security Operations); malware analysis and reverse engineering (Level 6 research territory); identity administration (Windows Server and Directory Services).',
    exit:'Offensive-security competency in the HND-level profile; the recruitment-facing module.'},
@@ -540,34 +512,23 @@ const MODS = [
   {id:'crest',year:2,title:'Entrepreneurship, Creativity and Innovation (CREST)',code:'NB-SOCE-L4-CM-IS-01',cr:0,type:'int',typeLabel:'Common / Integrative Skills',noncredit:true,
    role:'Mandatory non-credit completion component; enterprise-skills evidence without credit contribution.',
    feeds:[],
-<<<<<<< HEAD
    builds:[],
-=======
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    covers:'Entrepreneurship foundations and enterprise thinking; creativity and ideation practice; innovation processes and methods; opportunity identification and evaluation; taking an idea to a stated value proposition and pitching it.',
    excludes:'Degree-level leadership and entrepreneurial theory (NB6002CEM); project-management and business practice (Business and Project Management Practice on the SE pathway); professional communication (Effective Communication Skills II).',
    exit:'Mandatory completion component of the HND award.'},
 
   {id:'ecs2',year:2,title:'Effective Communication Skills II',code:'NB-SOCE-L4-CM-IS-02',cr:2,type:'int',typeLabel:'Common / Integrative Skills',
    role:'Carries the professional communication remit. Research readiness is owned by Capstone Project and is outside this module.',
-<<<<<<< HEAD
    feeds:[{to:'cu_ecs'}],
    builds:[{from:'ecs1'}],
-=======
-   feeds:[{to:'cu_ecs',note:'the numbered communication spine'}],
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    covers:'Advanced professional communication in workplace and organisational settings; technical and business reporting and documentation; interview and professional-dialogue performance; interpersonal communication, assertiveness and reflective practice.',
    excludes:'Academic-writing and research-readiness preparation (Capstone Project); the interpersonal-theory and emotional-intelligence depth of NB5006CEM; entrepreneurship content (CREST); pathway technical content.',
    exit:'Communication and research-readiness competency in the HND-level profile.'},
 
   {id:'cap',year:2,title:'Capstone Project',code:'NB-SOCE-L4-NEC-SK-01',cr:5,type:'skl',typeLabel:'Pathway / Skills',
    role:'Integrates the Year 1-2 spine; carries academic-writing and research-readiness into the Level 6 Research Project.',
-<<<<<<< HEAD
    feeds:[{to:'cu_resprep'},{to:'cu_resdel'}],
    builds:[{spine:'draws across the Year 1 and Year 2 spine'}],
-=======
-   feeds:[{to:'cu_resprep',note:'Level 6 Research Project Preparation - sole carrier of the research-readiness contribution'},{to:'cu_resdel',note:'Level 6 Research Project Delivery'}],
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
    covers:'A supervised applied project integrating networking, security and systems competencies, with academic-writing and research-readiness development.',
    excludes:'Taught subject content.',
    exit:'Capstone competency evidence in the HND-level profile.'},
@@ -803,11 +764,7 @@ cuRows(['cu_appeh','cu_ai4cyber'],'Level 6 - Ethical Hacking track');
 cuRows(['cu_naa','cu_ais'],'Level 6 - Network Engineering track');
 
 document.getElementById('foot').innerHTML =
-<<<<<<< HEAD
  'Applied Cybersecurity (Network Engineering and Cybersecurity) - Feeder and Consumer Map, (module records v1.3). Years 1 and 2 module architecture at design stage; the Coventry Applied Cybersecurity Levels 5 and 6 are fixed by the validation agreement (Level 5 shared; Level 6 in Ethical Hacking and Network Engineering tracks). '+
-=======
- 'Applied Cybersecurity (Network Engineering and Cybersecurity) - Feeder and Consumer Map, (module records v1.2). Years 1 and 2 module architecture at design stage; the Coventry Applied Cybersecurity Levels 5 and 6 are fixed by the validation agreement (Level 5 shared; Level 6 in Ethical Hacking and Network Engineering tracks). '+
->>>>>>> 8591eb016f78361ffc3524d45f69639105bdec06
  'Credit values follow the SLQF (2015) basis of 50 notional hours per credit (Industrial Training 100). Credit values, hours distributions and assessment weightings are confirmed at module-specification stage. This document maps prerequisite and feeder relationships only. '+
  'Generated '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+'.';
 </script>
